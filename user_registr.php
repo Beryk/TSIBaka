@@ -7,6 +7,7 @@
 	
 	if(($user=="") || ($pass=="")) {
 		echo '<script>alert("There are empty fields!");</script>';
+		
 		}else{
     
     $query = mysql_query("SELECT * FROM users WHERE name='$user'");
@@ -15,9 +16,10 @@
     	echo '<script>alert("Username already exists!"); </script>';
     }else{
     	mysql_query("INSERT INTO users (name , password) VALUES ('$user', '$pass')");
-		$message = 'You were successfully registered!';
+		//echo '<script>alert("You were successfully registered!");</script>';
         header("location:index.php");
 		exit;
+		
 		
   }
  }

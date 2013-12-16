@@ -1,3 +1,31 @@
+<?php
+session_start();
+if (isset($_POST['loginbtn'])){
+$dbhandle = mysql_connect("localhost", "vadim", "53279");
+$selected = mysql_select_db("carsaloon", $dbhandle);
+$login = $_POST['lgn'];
+$pass = $_POST['password'];
+
+$query = mysql_query("SELECT name, password FROM users WHERE name='$login' AND password='$pass'");
+
+if(mysql_num_rows($query) > 0){
+	$_SESSION['user'] = $login;
+	$_SESSION['password'] = $pass;
+	
+	$query = mysql_query("SELECT id FROM users WHERE name='$login' AND password='$pass'");
+	$userid = mysql_fetch_array($query);
+	$_SESSION['id'] = $userid['id'];
+	
+	header("location:main.php");
+	}else{
+	echo '<script>alert("Wrong username or password!");</script>';
+	
+}
+mysql_close($dbhandle);
+}else if(isset($_POST['registration'])){
+	header("location:registration.php");
+}
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -14,10 +42,10 @@
  <div id="indexw">
   <div id="indexcontent">
   
-  <form id="login" mehod="post" action="registration.html">
+  <form id="login" method="post" action="">
    <div class="formrow">
     <label>Login:</label>
-    <input type="text" name="login" />
+    <input type="text" name="lgn" />
     </div>
     
     <div class="formrow">
@@ -25,10 +53,11 @@
      <input type="password" name="password" />
     </div>
     <div id="indexbtns">
-     <input type="button" id="sbmtlgnbtn" name="loginbtn" value="Login" />
-     <input type="submit" id="sbmtregbtn" name="submit" value="Register" />
+     <input type="submit" id="sbmtlgnbtn" name="loginbtn" value="Login" />
+     <input type="submit" id="sbmtregbtn" name="registration" value="Register" />
      </div>
     </form>
+    
     </div> <!-- end content -->
     </div> <!-- end indexwrapper -->
 <!--<form method="post" action="registration.html">
@@ -44,8 +73,3 @@
 </div>-->
 </body>
 </html>
-<?php
-if (isset($_POST['signin'])){
-header("location:logincheck.php");
-}
-?>

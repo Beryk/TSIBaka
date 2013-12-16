@@ -1,12 +1,38 @@
-<?php session_start(); ?>
+<?php
+session_start();
+ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="content-type" content="text/html; charset=windows-1251" />
 	<title></title>
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 	<link rel="stylesheet" href="style.css" type="text/css" />
+    <script type="text/javascript" src="js/popup.js"></script>
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+	
+		$(document).ready(function(){
+
+			 PopUp($('#obj'), $('.trigg'));
+			 
+		});
+		
+		function sendPost(ths) {
+			
+    	 var tr = ths.parentNode.parentNode,
+         carid = tr.getElementByTagName("td")[0].innerHTML;
+		 $.post('car/main.php', {message:carid}, function(data)	{
+	alert('Сервер ответил: '+data);
+});
+         
+}
+
+		
+	</script>
+
+    
 </head>
 
 <body>
@@ -27,20 +53,65 @@
         </form>
         </div>
 		<div class="table">
+        
+        <div id="obj">
+        	<div id="popup_input">
+            
+            <table id="popuptable">
+            <tr id="inforow_color">
+            <td>Name</td>
+            <td>Model</td>
+            <td>Year</td>
+            <td>TO</td>
+            </tr>
+            <tr>
+            <td><?php echo $_SESSION['id']; ?></td>
+            </tr>
+            </table>
+            
+            </div>
+         </div>
+	
         <?php
 		//Car information output
 		require('setup.php');
 		$db = db_connect();
 		$rs = mysql_query("SELECT * FROM carinfo");
-		print "<table border='solid' cellspacing='0' cellpadding='0'>";
+		print "<table id='maintable'>";
+		$var = 1;
+		
+	
+		echo "<tr id='inforow_color'>";
+		echo "<td width='25px'></td>";
+		echo "<td>Name</td>";
+		echo "<td>Model</td>";
+		echo "<td>Year</td>";
+		echo "<td>Comment</td>";
+		echo "<td>TO</td></td>";
+		echo "<td>Addition info</tr>";
+		
 		while ($row = mysql_fetch_array($rs)){
-			print "<tr>";
-			echo "<td>".$row['name']."</td>";
-			echo "<td>".$row['model']."</td>";
-			echo "<td>".$row['year']."</td>";
-			echo "<td>".$row['info']."</td>";
-			echo "<td>".$row['TO']."</td>";
+			if($var%2 == 0){
+				$id = 'table_row_color_2';
+				}else{
+					$id = 'table_row_color_1';
+					}
+			
+ 		
+			echo "<tr>";
+			echo "<td hidden='true'>".$row['carid']."</td>";
+			echo "<td id='$id' width='25px'></td>";
+			echo "<td id='$id'>".$row['name']."</td>";
+			echo "<td id='$id'>".$row['model']."</td>";
+			echo "<td id='$id'>".$row['year']."</td>";
+			echo "<td id='$id'>".$row['info']."</td>";
+			echo "<td id='$id'>".$row['to']."</td>";
+			echo "<td id='$id'><a class='trigg' href='javascript:void(0);'>Information</a></td>";// <button onclick='sendPost(this);'>K</button></td>
+
+
+			$var++;
 			}
+			$var = 1;
 			print "</tr>";
 			print "</table>";
 			mysql_close($db);
@@ -50,26 +121,21 @@
 		</div><!-- .container-->
 
 		<div class="left-sidebar">
-   
-        	<form><p align="center"><strong>Profile:</strong></p></br>
-            <?php
-			// Р’С‹РІРѕРґ РІ leftsidebar
-            print "<table>";
-            print "<tr>";
-            echo "<td><font id='leftside'>&nbsp&nbspUser</font></td>";
-		    echo "<td>&nbsp&nbsp<font id='leftside'>Settings</font></td>";
-            print "</tr>";
-            print "</table>";
-            ?>
-            Nickname Settings</br>
-            Time Log out
-            </form>
-            </table>
+        
+			<div id="usermenu">
+      
+           
+			<?php
+			// Вывод в leftsidebar
             
-			<p align="center"><strong>Filter:</strong></p></br>
-            <form>&nbsp;&nbsp;Search: <input type="text" name="search" width="15" />
-            
-            </form> 
+            echo "<ul>";
+            echo "<li>Welcome, &nbsp;<font>" . $_SESSION['user'] . "</font></li></br></br>";
+			echo "<li id='lis'><a href='index.php'><img src='images/exit.png' alt='exit'></a></li>";
+            echo "</ul>";
+           
+		   ?>
+  	          
+            </div>
 		</div><!-- .left-sidebar -->
 
 	</div><!-- .middle-->
